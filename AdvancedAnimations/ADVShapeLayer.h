@@ -15,12 +15,7 @@ typedef void(^ADVCompletionBlock)(void);
 
 @property (nonatomic) CGFloat startAngle;
 @property (nonatomic) CGFloat endAngle;
-
-//we cannot animate UIColor directly so we will do some hack on it
-@property (nonatomic) CGFloat redChannel;
-@property (nonatomic) CGFloat greenChannel;
-@property (nonatomic) CGFloat blueChannel;
-
+@property (nonatomic) CGColorRef fillColor;
 @property (nonatomic) CGFloat animationDuration;
 
 @property (nonatomic, copy) ADVCompletionBlock completionBlock;

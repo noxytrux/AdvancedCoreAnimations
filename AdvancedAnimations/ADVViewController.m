@@ -100,11 +100,7 @@ NSString * const kADVEmbedSegueIdentifier = @"ADVEmbedIdleSegueIdentifier";
     pieChartLayer.bounds = CGRectMake(0, 0, pieChartSize, pieChartSize);
     pieChartLayer.startAngle = -M_PI_2;
     pieChartLayer.endAngle = -M_PI_2;
-   
-    pieChartLayer.redChannel = 0.196;
-    pieChartLayer.greenChannel = 0.804;
-    pieChartLayer.blueChannel = 0.196;
-    
+    pieChartLayer.fillColor = [UIColor colorFromHexString:@"#32CD32"].CGColor;
     pieChartLayer.animationDuration = animationDuration;
     pieChartLayer.position = self.view.center;
     
@@ -127,10 +123,7 @@ NSString * const kADVEmbedSegueIdentifier = @"ADVEmbedIdleSegueIdentifier";
                    dispatch_get_main_queue(), ^{
     
                        pieChartLayer.endAngle = (M_PI * 2.0)-M_PI_2;
-                       pieChartLayer.redChannel = 1;
-                       pieChartLayer.greenChannel = 0.157;
-                       pieChartLayer.blueChannel = 0.0;
-
+                       pieChartLayer.fillColor = [UIColor colorFromHexString:@"#FF2800"].CGColor;
                    });
     
     [pieChartLayer rotateAround];

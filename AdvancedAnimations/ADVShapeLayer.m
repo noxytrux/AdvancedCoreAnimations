@@ -16,9 +16,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
 @dynamic startAngle;
 @dynamic endAngle;
 
-@dynamic redChannel;
-@dynamic greenChannel;
-@dynamic blueChannel;
+@dynamic fillColor;
 
 -(CABasicAnimation *)makeAnimationForKey:(NSString *)key
 {
@@ -37,9 +35,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
     
     if (self) {
        
-        self.redChannel = 0.0f;
-        self.greenChannel = 1.0f;
-        self.blueChannel = 0.0f;
+        self.fillColor = [UIColor colorWithRed:0.0 green:1.0 blue:0.0 alpha:1.0].CGColor;
         self.animationDuration = 0.5f;
         
         [self setNeedsDisplay];
@@ -58,9 +54,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
             ADVShapeLayer *other = (ADVShapeLayer *)layer;
             self.startAngle = other.startAngle;
             self.endAngle = other.endAngle;
-            self.redChannel = other.redChannel;
-            self.greenChannel = other.greenChannel;
-            self.blueChannel = other.blueChannel;
+            self.fillColor = other.fillColor;
         }
     }
     
@@ -72,9 +66,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
     
     if ([event isEqualToString:NSStringFromSelector(@selector(startAngle))] ||
         [event isEqualToString:NSStringFromSelector(@selector(endAngle))] ||
-        [event isEqualToString:NSStringFromSelector(@selector(redChannel))] ||
-        [event isEqualToString:NSStringFromSelector(@selector(greenChannel))] ||
-        [event isEqualToString:NSStringFromSelector(@selector(blueChannel))] ){
+        [event isEqualToString:NSStringFromSelector(@selector(fillColor))] ){
         
         return [self makeAnimationForKey:event];
     }
@@ -87,9 +79,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
 
     if ([key isEqualToString:NSStringFromSelector(@selector(startAngle))] ||
         [key isEqualToString:NSStringFromSelector(@selector(endAngle))] ||
-        [key isEqualToString:NSStringFromSelector(@selector(redChannel))] ||
-        [key isEqualToString:NSStringFromSelector(@selector(greenChannel))] ||
-        [key isEqualToString:NSStringFromSelector(@selector(blueChannel))]) {
+        [key isEqualToString:NSStringFromSelector(@selector(fillColor))] ) {
         
         return YES;
     }
@@ -112,7 +102,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
     CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle, self.endAngle, clockwise);
     CGContextClosePath(ctx);
 
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:self.redChannel green:self.greenChannel blue:self.blueChannel alpha:1.0].CGColor);
+    CGContextSetFillColorWithColor(ctx, self.fillColor);
     CGContextSetStrokeColorWithColor(ctx, [UIColor clearColor].CGColor);
     CGContextSetLineWidth(ctx, 0);
     CGContextDrawPath(ctx, kCGPathFillStroke);
