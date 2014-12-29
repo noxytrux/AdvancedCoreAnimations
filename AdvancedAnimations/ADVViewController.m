@@ -14,7 +14,6 @@
 
 const CGFloat kADVFakeRecordDurationTime = 5.0f;
 NSString * const kADVEmbedSegueIdentifier = @"ADVEmbedIdleSegueIdentifier";
-NSString * const kADVPieAnimationKey = @"animatePie";
 
 @interface ADVViewController ()
 
@@ -56,8 +55,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
                                                               action:@selector(handleMenuTapGesture:)];
     [self.view addGestureRecognizer:self.tapGesture];
     
-    self.recordButton.alpha = 0.0f;
-    self.recordButton.transform = CGAffineTransformMakeScale(0.0001, 0.0001);
+    [self.recordButton fadeOutWithScaleDown];
 }
 
 - (void)setRecordButtonOpen:(BOOL)recordButtonOpen
@@ -96,8 +94,10 @@ NSString * const kADVPieAnimationKey = @"animatePie";
 
 - (void)setupArcRecordAnimationWithDuration:(CGFloat)animationDuration
 {
+    const CGFloat pieChartSize = 170.0f;
+    
     ADVShapeLayer *pieChartLayer = [[ADVShapeLayer alloc] init];
-    pieChartLayer.bounds = CGRectMake(0, 0, 170, 170);
+    pieChartLayer.bounds = CGRectMake(0, 0, pieChartSize, pieChartSize);
     pieChartLayer.startAngle = -M_PI_2;
     pieChartLayer.endAngle = -M_PI_2;
    
@@ -110,6 +110,19 @@ NSString * const kADVPieAnimationKey = @"animatePie";
     
     [self.view.layer addSublayer:pieChartLayer];
     
+    self.recordingAnimatedLayer = pieChartLayer;
+    
+    __weak __typeof__(self) weakSelf = self;
+    
+    pieChartLayer.completionBlock = ^{
+    
+        //fire up magnus opus menu
+        [weakSelf.recordingAnimatedLayer fadeOut];
+        [weakSelf.recordButton prepareForMenu];
+        [weakSelf openActionMenu];
+    };
+    
+    //delay it a bit to perform animations
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
     
@@ -120,43 +133,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
 
                    });
     
-    //rotate pie while filling
-    CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-   
-    rotationAnimation.fromValue = @0.0f;
-    rotationAnimation.toValue = @(2.0f * M_PI);
-    rotationAnimation.duration = animationDuration;
-    rotationAnimation.delegate = self;
-    
-    [pieChartLayer addAnimation:rotationAnimation forKey:kADVPieAnimationKey];
-    
-    self.recordingAnimatedLayer = pieChartLayer;
-}
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{
-    //fire up magnus opus menu
-    
-    CABasicAnimation *ropacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    
-    ropacityAnimation.fromValue = @1.0f;
-    ropacityAnimation.toValue = @0.0f;
-    ropacityAnimation.duration = 0.5f;
-    
-    self.recordingAnimatedLayer.opacity = 0.0f;
-    [self.recordingAnimatedLayer addAnimation:ropacityAnimation forKey:nil];
-    
-    CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    
-    scaleAnimation.fromValue = @1.5f;
-    scaleAnimation.toValue = @1.0f;
-    scaleAnimation.duration = 0.5f;
-    
-    self.recordButton.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0);
-    [self.recordButton.layer addAnimation:scaleAnimation forKey:nil];
-    
-
-    [self openActionMenu];
+    [pieChartLayer rotateAround];
 }
 
 - (void)openActionMenu
@@ -199,8 +176,8 @@ NSString * const kADVPieAnimationKey = @"animatePie";
         
         [UIView animateWithDuration:0.8
                               delay:delay
-             usingSpringWithDamping:0.5
-              initialSpringVelocity:0.0
+             usingSpringWithDamping:0.2
+              initialSpringVelocity:0.05
                             options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              
@@ -214,7 +191,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
                              
                          }];
         
-        delay += 0.25;
+        delay += 0.1;
     }
 }
 
@@ -242,9 +219,9 @@ NSString * const kADVPieAnimationKey = @"animatePie";
                              
                          }];
         
-        [UIView animateWithDuration:0.8
+        [UIView animateWithDuration:0.3
                               delay:delay
-             usingSpringWithDamping:0.5
+             usingSpringWithDamping:0.9
               initialSpringVelocity:0.0
                             options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
@@ -255,7 +232,7 @@ NSString * const kADVPieAnimationKey = @"animatePie";
                              
                          }];
         
-        delay += 0.25;
+        delay += 0.1;
     }
 }
 

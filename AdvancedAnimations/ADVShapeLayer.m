@@ -9,6 +9,8 @@
 #import "ADVShapeLayer.h"
 #import "UIColor+Utilities.h"
 
+NSString * const kADVPieAnimationKey = @"animatePie";
+
 @implementation ADVShapeLayer
 
 @dynamic startAngle;
@@ -114,6 +116,40 @@
     CGContextSetStrokeColorWithColor(ctx, [UIColor clearColor].CGColor);
     CGContextSetLineWidth(ctx, 0);
     CGContextDrawPath(ctx, kCGPathFillStroke);
+}
+
+- (void)rotateAround
+{
+    //rotate pie while filling
+    CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    
+    rotationAnimation.fromValue = @0.0f;
+    rotationAnimation.toValue = @(2.0f * M_PI);
+    rotationAnimation.duration = self.animationDuration;
+    rotationAnimation.delegate = self;
+    
+    [self addAnimation:rotationAnimation forKey:kADVPieAnimationKey];
+}
+
+- (void)fadeOut
+{
+    CABasicAnimation *ropacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    
+    ropacityAnimation.fromValue = @1.0f;
+    ropacityAnimation.toValue = @0.0f;
+    ropacityAnimation.duration = 0.5f;
+    
+    self.opacity = 0.0f;
+    
+    [self addAnimation:ropacityAnimation forKey:nil];
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    if (self.completionBlock) {
+        
+        self.completionBlock();
+    }
 }
 
 @end

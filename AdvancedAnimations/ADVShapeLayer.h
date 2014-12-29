@@ -9,6 +9,8 @@
 @import UIKit;
 @import QuartzCore;
 
+typedef void(^ADVCompletionBlock)(void);
+
 @interface ADVShapeLayer : CALayer
 
 @property (nonatomic) CGFloat startAngle;
@@ -20,5 +22,10 @@
 @property (nonatomic) CGFloat blueChannel;
 
 @property (nonatomic) CGFloat animationDuration;
+
+@property (nonatomic, copy) ADVCompletionBlock completionBlock;
+
+- (void)rotateAround;
+- (void)fadeOut;
 
 @end

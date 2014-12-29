@@ -101,6 +101,12 @@ NSString * const kADVScaleButtonKey = @"transformButton";
     self.titleEdgeInsets = UIEdgeInsetsMake(0.0, - imageSize.width, - (totalHeight - titleSize.height) - self.textOffset,0.0);
 }
 
+- (void)fadeOutWithScaleDown
+{
+    self.alpha = 0.0f;
+    self.transform = CGAffineTransformMakeScale(0.0001, 0.0001);
+}
+
 - (void)animateButtonHidden:(BOOL)hidden
 {
     [self.layer removeAllAnimations];
@@ -175,6 +181,18 @@ NSString * const kADVScaleButtonKey = @"transformButton";
 
     [self.layer addAnimation:heartBeatAnimation
                       forKey:kADVHeartBeatAnimationKey];
+}
+
+- (void)prepareForMenu
+{
+    CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    
+    scaleAnimation.fromValue = @1.5f;
+    scaleAnimation.toValue = @1.0f;
+    scaleAnimation.duration = 0.5f;
+    
+    self.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0);
+    [self.layer addAnimation:scaleAnimation forKey:nil];
 }
 
 - (void)setUserInteractionEnabled:(BOOL)userInteractionEnabled

@@ -16,5 +16,7 @@ IB_DESIGNABLE
 @property(nonatomic) IBInspectable CGFloat textOffset;
 
 - (void)animateButtonHidden:(BOOL)hidden;
+- (void)prepareForMenu;
+- (void)fadeOutWithScaleDown;
 
 @end
